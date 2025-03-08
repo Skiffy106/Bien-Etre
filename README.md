@@ -1,5 +1,13 @@
 # BIEN-ÊTRE
-I fitness app to help you with your health goals. With some help from AI.
+A fitness app to help you with your health goals. With some help from AI.
+
+## Tech Stack
+- React Native (Frontend)
+- Expo (Frontend Deployment)
+- Flask (Backend)
+- PostgreSQL (Database)
+- Google Cloud (Auth)
+
 
 ## How to Clone
 ```bash
