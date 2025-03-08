@@ -2,7 +2,9 @@
 I fitness app to help you with your health goals. With some help from AI.
 
 ## How to Clone
+```bash
 git clone https://github.com/Skiffy106/Bien-Etre.git
+```
 
 ## How to Run Frontend
 ```bash
