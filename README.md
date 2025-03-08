@@ -11,7 +11,7 @@ git clone https://github.com/Skiffy106/Bien-Etre.git
 cd Bien-Etre
 cd frontend
 npm install
-npm run android
+npm run web
 ```
 
 ## How to Run Backend
