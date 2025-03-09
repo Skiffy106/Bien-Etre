@@ -9,7 +9,7 @@ A fitness app to help you with your health goals. With some help from AI.
 - Expo (Frontend Deployment)
 - Flask (Backend)
 - PostgreSQL (Database)
-- Google Cloud (Auth)
+- Supabase (Backend Hosting)
 
 
 ## How to Clone
