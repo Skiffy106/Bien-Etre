@@ -1,102 +1,40 @@
-from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+import psycopg2
+from dotenv import load_dotenv
 import os
 
-# Initialize the Flask application
-app = Flask(__name__)
+# Load environment variables from .env
+load_dotenv()
 
-# Set up the PostgreSQL database URI (replace with your credentials)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://youruser:yourpassword@localhost/yourdatabase'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# Fetch variables
+USER = os.getenv("user")
+PASSWORD = os.getenv("password")
+HOST = os.getenv("host")
+PORT = os.getenv("port")
+DBNAME = os.getenv("dbname")
 
-# Initialize the SQLAlchemy object
-db = SQLAlchemy(app)
-
-# Define a User model (table)
-class User(db.Model):
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    height = db.Column(db.Float, nullable=True)  # Height in cm
-    weight = db.Column(db.Float, nullable=True)  # Weight in kg
-    age = db.Column(db.Integer, nullable=True)
-
-    def __repr__(self):
-        return f'<User {self.username}>'
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'username': self.username,
-            'email': self.email,
-            'height': self.height,
-            'weight': self.weight,
-            'age': self.age
-        }
-
-# Endpoint to create a new user
-@app.route('/users', methods=['POST'])
-def create_user():
-    data = request.get_json()
-    
-    new_user = User(
-        username=data['username'],
-        email=data['email'],
-        height=data['height'],
-        weight=data['weight'],
-        age=data['age']
+# Connect to the database
+try:
+    connection = psycopg2.connect(
+        user=USER,
+        password=PASSWORD,
+        host=HOST,
+        port=PORT,
+        dbname=DBNAME
     )
+    print("Connection successful!")
     
-    db.session.add(new_user)
-    db.session.commit()
+    # Create a cursor to execute SQL queries
+    cursor = connection.cursor()
     
-    return jsonify(new_user.to_dict()), 201
+    # Example query
+    cursor.execute("SELECT NOW();")
+    result = cursor.fetchone()
+    print("Current Time:", result)
 
-# Endpoint to get user details by ID
-@app.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    user = User.query.get(user_id)
-    
-    if user is None:
-        return jsonify({'message': 'User not found'}), 404
-    
-    return jsonify(user.to_dict())
+    # Close the cursor and connection
+    cursor.close()
+    connection.close()
+    print("Connection closed.")
 
-# Endpoint to update user data
-@app.route('/users/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
-    user = User.query.get(user_id)
-    
-    if user is None:
-        return jsonify({'message': 'User not found'}), 404
-    
-    data = request.get_json()
-    
-    user.username = data.get('username', user.username)
-    user.email = data.get('email', user.email)
-    user.height = data.get('height', user.height)
-    user.weight = data.get('weight', user.weight)
-    user.age = data.get('age', user.age)
-    
-    db.session.commit()
-    
-    return jsonify(user.to_dict())
-
-# Endpoint to delete a user
-@app.route('/users/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    user = User.query.get(user_id)
-    
-    if user is None:
-        return jsonify({'message': 'User not found'}), 404
-    
-    db.session.delete(user)
-    db.session.commit()
-    
-    return jsonify({'message': 'User deleted successfully'}), 200
-
-# Start the app
-if __name__ == '__main__':
-    app.run(debug=True)
+except Exception as e:
+    print(f"Failed to connect: {e}")
