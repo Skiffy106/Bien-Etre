@@ -16,7 +16,13 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    environment: backend
+    env:
+      user: ${{ secrets.USER }}
+      password: ${{ secrets.PASSWORD }}
+      port: ${{ secrets.PORT }}
+      host: ${{ secrets.HOST }}
+      dbname: ${{ secrets.dbname }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.10
