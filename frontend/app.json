@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7596dfcd-fa9d-4e00-904f-dae62c13ec9f"
+      }
+    },
+    "owner": "skiffy106"
   }
 }
