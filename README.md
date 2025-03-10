@@ -26,8 +26,13 @@ git clone https://github.com/Skiffy106/Bien-Etre.git
 cd Bien-Etre
 cd frontend
 npm install
-npm run web
+npm run start
 ```
+This will spin up a local development server. Press `s` after `npm run start` to run the Expo Go build.
+The web version will be available via [localhost:8081](http://localhost:8081).
+Scan the QR code to download the mobile build on your phone using the Expo Go app.
+> [!NOTE]  
+> To view the mobile build, you need to download the Expo Go app for [iOS](https://apps.apple.com/us/app/expo-go/id982107779) or for [Android](https://play.google.com/store/apps/details?id=host.exp.exponent). 
 
 ## How to Run Backend
 ```bash
