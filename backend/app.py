@@ -53,6 +53,7 @@ client = OpenAI(
 )
 
 API_IDENTIFIER = "llama-3.2-1b-instruct"
+PRE_PROMPT_MESSAGE = "Respond only in riddles."
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -65,7 +66,10 @@ def chat():
     try:
         response = client.chat.completions.create(
             model=API_IDENTIFIER,
-            messages=[{"role": "user", "content": user_message}]
+            messages=[
+                {"role": "system", "content": PRE_PROMPT_MESSAGE},
+                {"role": "user", "content": user_message}
+            ]
         )
 
         return jsonify({'response': response.choices[0].message.content})
@@ -75,8 +79,6 @@ def chat():
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
-
-
 
 # get models func
 # chat api route that hits the v1/chat/completions enpoint in the correct format
