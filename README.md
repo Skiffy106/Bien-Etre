@@ -2,7 +2,8 @@
 ![Backend Status](https://github.com/Skiffy106/Bien-Etre/actions/workflows/test-python-backend.yml/badge.svg)
 ![Front End](https://img.shields.io/badge/Status-Live-green)
 
-A fitness app to help you with your health goals. With some help from AI.
+A fitness app to help you with your health goals. With some help from AI. hello
+
 
 ## Tech Stack
 <div align="center">
