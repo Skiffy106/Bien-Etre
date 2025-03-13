@@ -5,3 +5,4 @@ supabase
 jsonify
 requests
 openai
+supabase

@@ -3,47 +3,8 @@ from flask import Flask, request, jsonify
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+from supabase import create_client
 import os
-
-# Load environment variables from .env
-load_dotenv()
-
-
-def connect_supabase():
-    # Fetch variables
-    USER = os.getenv("user")
-    PASSWORD = os.getenv("password")
-    HOST = os.getenv("host")
-    PORT = os.getenv("port")
-    DBNAME = os.getenv("dbname")
-
-    # Connect to the database
-    try:
-        connection = psycopg2.connect(
-            user=USER,
-            password=PASSWORD,
-            host=HOST,
-            port=PORT,
-            dbname=DBNAME
-        )
-        print("Connection successful!")
-        
-        # Create a cursor to execute SQL queries
-        cursor = connection.cursor()
-        
-        # Example query
-        cursor.execute("SELECT NOW();")
-        result = cursor.fetchone()
-        print("Current Time:", result)
-
-        # Close the cursor and connection
-        cursor.close()
-        connection.close()
-        print("Connection closed.")
-
-    except Exception as e:
-        print(f"Failed to connect: {e}")
-
 
 app = Flask(__name__)
 
@@ -52,11 +13,54 @@ client = OpenAI(
     api_key="ligma"
 )
 
+load_dotenv()
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 API_IDENTIFIER = "llama-3.2-1b-instruct"
 PRE_PROMPT_MESSAGE = "Respond only in riddles."
 
+@app.route("/signup", methods=["POST"])
+def signup():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    response = supabase.auth.sign_up({"email": email, "password": password})
+    
+    return jsonify(response), 201
+
+@app.route("/signin", methods=["POST"])
+def signin():
+    data = request.json
+    email = data.get("email")
+    password = data.get("password")
+
+    response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+    
+    return jsonify(response), 200
+
+from flask import request
+
+def get_current_user():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        return None
+    
+    token = auth_header.split("Bearer ")[-1]
+    user = supabase.auth.get_user(token)
+    
+    return user
+
+
+
 @app.route('/chat', methods=['POST'])
 def chat():
+    user = get_current_user()
+    if not user:
+        return jsonify({"error": "Unauthorized"}), 401
+    
     data = request.json
     user_message = data.get("message", "")
 
