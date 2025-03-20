@@ -93,8 +93,12 @@ if __name__ == '__main__':
 @app.route("/auth/google", methods=["GET"])
 def google_auth():
     response = supabase.auth.sign_in_with_oauth(
-        provider="google",
-        options={"redirect_to": "http://127.0.0.1:5000/auth/callback"}
-    )
-    
-    return jsonify({"url": response.url})
+            {"provider": "google", "redirect_to": "http://127.0.0.1:5000/auth/callback"}
+        )
+   
+    return jsonify(response.model_dump()), 200  
+
+      
+
+
+ 
