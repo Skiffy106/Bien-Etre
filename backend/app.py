@@ -1,10 +1,11 @@
-import psycopg2
+
 from flask import Flask, request, jsonify
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from supabase import create_client
 import os
+from authlib.integrations.flask_client import OAuth
 
 app = Flask(__name__)
 
@@ -29,7 +30,7 @@ def signup():
 
     response = supabase.auth.sign_up({"email": email, "password": password})
     
-    return jsonify(response), 201
+    return jsonify(response.model_dump()), 201
 
 @app.route("/signin", methods=["POST"])
 def signin():
@@ -39,7 +40,7 @@ def signin():
 
     response = supabase.auth.sign_in_with_password({"email": email, "password": password})
     
-    return jsonify(response), 200
+    return jsonify(response.model_dump()), 200
 
 from flask import request
 
@@ -86,3 +87,14 @@ if __name__ == '__main__':
 
 # get models func
 # chat api route that hits the v1/chat/completions enpoint in the correct format
+
+
+# Google OAuth with Supabase 
+@app.route("/auth/google", methods=["GET"])
+def google_auth():
+    response = supabase.auth.sign_in_with_oauth(
+        provider="google",
+        options={"redirect_to": "http://127.0.0.1:5000/auth/callback"}
+    )
+    
+    return jsonify({"url": response.url})
